@@ -2,3 +2,57 @@ sudo yum install python3-pip python3-dev build-essential libssl-dev libffi-dev p
 
 uwsgi --socket 0.0.0.0:8080 --protocol=http -w wsgi:app
 lsof -i | grep 8080
+
+myproject.ini
+-----------------------
+[uwsgi]
+module = wsgi:app
+
+master = true
+processes = 5
+
+socket = myproject.sock
+chmod-socket = 660
+vacuum = true
+
+die-on-term = true
+
+-------------------------
+
+sudo nano /etc/systemd/system/myproject.service
+--------------------------
+[Unit]
+Description=uWSGI instance to serve app
+After=network.target
+
+[Service]
+User=niharmishra_dev_gmail_com
+Group=niharmishra_dev_gmail_com
+WorkingDirectory=/home/niharmishra_dev_gmail_com/test
+Environment="PATH=/home/niharmishra_dev_gmail_com/test/ev/bin"
+ExecStart=/home/niharmishra_dev_gmail_com/test/ev/bin/uwsgi --ini app.ini 
+
+[Install]
+WantedBy=multi-user.target
+
+---------------------------------
+
+sudo systemctl start myproject
+sudo systemctl enable myproject
+
+--------------------------------
+
+sudo nano /etc/nginx/config.d/app.conf
+-------------------------------------
+server {
+    listen 80;
+    server_name 34.66.17.116;
+
+    location / {
+        include uwsgi_params;
+        uwsgi_pass unix:/home/niharmishra_dev_gmail_com/test/myproject.sock;
+    }
+}
+
+-------------------------------------------
+sudo systemctl restart nginx
