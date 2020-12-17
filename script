@@ -4,8 +4,8 @@ uwsgi --socket 0.0.0.0:8080 --protocol=http -w wsgi:app
 lsof -i | grep 8080
 sudo lsof -i -P -n | grep LISTEN
 
-yum install --enablerepo="epel" ufw -y
-yum install -y ufw
+$ sudo firewall-cmd --zone=public --permanent --add-port=PORT/tcp
+$ sudo firewall-cmd --reload
 
 myproject.ini
 -----------------------
