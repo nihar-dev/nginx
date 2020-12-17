@@ -4,8 +4,7 @@ uwsgi --socket 0.0.0.0:8080 --protocol=http -w wsgi:app
 lsof -i | grep 8080
 sudo lsof -i -P -n | grep LISTEN
 
-$ sudo firewall-cmd --zone=public --permanent --add-port=PORT/tcp
-$ sudo firewall-cmd --reload
+iptables -I INPUT 1 -i eth0 -p tcp --dport 5000 -j ACCEPT
 
 myproject.ini
 -----------------------
