@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+      </script>
+      <script id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+      </script>
+
+    <title>MMM</title>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">MMM Optimisation</a>
+        </div>
+      </nav>
+
+        <div class="card">
+
+          <div class="card-body">
+
+            <div class="input-group mb-3">
+                <span class="input-group-text">Please enter variable count: </span>
+                <input type="text" class="form-control" id="variable_count" placeholder="variable eg: 1,2,3.." aria-label="eg: 1,2,3..">
+            </div>
+
+            <div id="spinner_variable" class="d-flex justify-content-center" style="display: none !important;" ;>
+                <div class="spinner-grow" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text">Equation: </span>
+        </div>
+          <form class="row g-3 align-items-center" id="math-function">
+          </form>
+          <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+          <button type="submit" id= "form-submit" style="display: none ; margin-top: 10px;" class="btn btn-outline-primary mb-2">Submit</button>
+          </div>
+          </div>
+          </div>
+
+          <h4>
+        <small class="text-muted">Bound and Constraints</small>
+          </h4>
+
+        <div class="card">
+          <div class="card-body">
+
+            <div class="row">
+
+              <div class="col-2"  >
+                <div id='bound_scroll' style="height: 250px; overflow-y: scroll;">
+
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <button  id = "button1"
+                    type="button" class="btn btn-outline-primary mb-2"  > apply </button>
+                 </div>
+              </div>
+              <div class="col-6">
+                <div id="main_content_for_bound">
+                  
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                  <button type="submit" id= "form-submit-bound" style="display: none; margin-top: 100px; " class="btn btn-outline-primary mb-2"> Add Constraints</button>
+                  </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+  
+  <script>
+$( document ).ready(function() {
+  $("#variable_count").change(function() {   
+        // $("#spinner_variable").show();
+        console.log( "variable count: ",$(this).val());
+        var variablecount  = $(this).val();
+
+        // ---------------------------------------------------------
+        variable_string = '';
+        dynamic_html  =``;
+        if(variablecount > 0){
+          for(var i=1;i<=variablecount;i++){
+            dynamic_html = dynamic_html.concat(`
+            <div class="col-sm-1">
+              <input type="text" class="form-control form-control-sm" id=${'x'+i} placeholder=" ">
+            </div>
+            <div class="col-auto">
+              <label for="staticEmail2">${ 'X'+i+'^'}</label>
+            </div>
+              <div class="col-sm-1">
+              <input type="text" class="form-control form-control-sm" id=${'x'+i} placeholder=" ">
+            </div>
+              <div class="col-auto">
+              <label for="staticEmail2" >${i==variablecount? ' ' :  ' + ' }</label>
+            </div>
+            
+            `)
+          }
+          
+        }
+        console.log(variable_string);
+        var $el = $('#math-function');
+        $el.empty();
+        $el.append(dynamic_html);
+
+        $("#form-submit").show();
+        // ---------------------------------------------------------------
+
+        // bound_scroll
+        dynamic_html_bound  =``;
+        if(variablecount > 0){
+          for(var i=1;i<=variablecount;i++){
+            dynamic_html_bound = dynamic_html_bound.concat(`
+            <div class="form-check">
+              <input class="form-check-input" name='values' type="checkbox" value=${'x'+i} id=${'X'+i+'b'}>
+              <label class="form-check-label" for="flexCheckDefault">
+                ${'x'+i}
+              </label>
+            </div>            
+            `)
+          }
+          
+        }
+        console.log(variable_string);
+        var $var_bound = $('#bound_scroll');
+        $var_bound.empty();
+        $var_bound.append(dynamic_html_bound);
+        $("#form-submit-bound").show();
+   
+    });
+
+});
+
+
+  </script>
+
+<script>
+  $(document).ready(function(){
+    $("#button1").click(function() {
+        var arr=[];
+        var p=$("#main_content_for_bound");
+        $(p).html("you have selected:");
+        $.each($("input[name='values']:checked"), function() {
+            // $(p).html($(p).html() + '<br>' + $(this).val());
+            arr.push($(this).val());
+          // console.log($(this).val());
+
+        });
+        $(p).html($(p).html() + '<br>' + arr.join(':') );
+        // $('#main_content_for_bound').val(arr.join(':'));      
+    }); 
+});
+</script>
+
+
+  </body>
+</html>
