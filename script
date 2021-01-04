@@ -1,3 +1,18 @@
+sudo yum install -y yum-utils
+sudo yum-config-manager \
+     --add-repo \
+     https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum-config-manager --setopt="docker-ce-stable.baseurl=https://download.docker.com/linux/centos/7/x86_64/stable" --save
+sudo yum install -y http://mirror.centos.org/centos/7/extras/x86_64/Packages/container-selinux-2.107-3.el7.noarch.rpm
+sudo yum install -y https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm
+sudo yum install -y docker-ce docker-ce-cli containerd.io
+sudo systemctl enable docker
+sudo systemctl start docker
+sudo docker run -it --name hello-world --rm hello-world
+
+-----------------------------------------------------------------------------------------------------
+
+
 sudo yum install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
 
 uwsgi --socket 0.0.0.0:8080 --protocol=http -w wsgi:app
