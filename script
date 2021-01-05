@@ -1,3 +1,6 @@
+sudo docker run  -d --rm --name flask-docker-2-demo-app -p 5001:5001 flask-docker-demo-app
+--------------------------------
+
 sudo yum install -y yum-utils
 sudo yum-config-manager \
      --add-repo \
