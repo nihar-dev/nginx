@@ -19,43 +19,78 @@
         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
       </script>
 
-    <title>MMM</title>
+    <title>Generic Optimisation</title>
+    <style>
+      body{
+        background: #ADA996;  /* fallback for old browsers */
+        background: -webkit-linear-gradient(to right, #EAEAEA, #DBDBDB, #F2F2F2, #ADA996);  /* Chrome 10-25, Safari 5.1-6 */
+        background: linear-gradient(to right, #EAEAEA, #DBDBDB, #F2F2F2, #ADA996); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+      }
+      .vl {
+        margin-top: 10px;
+        border-left: 6px solid  #ADA996;
+      }
+      .text_styl{
+        margin-left: 10px;
+      }
+
+    </style>
   </head>
   <body>
     <div class="container">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <nav class="navbar navbar-expand-lg navbar-dark "  style="background-color: #ADA996;">
         <div class="container-fluid">
-          <a class="navbar-brand" href="/">MMM Optimisation</a>
+          <a class="navbar-brand" href="/"><p class="h3">Generic Optimization</p></a>
         </div>
       </nav>
+        <h4 class="vl">
+          <small class="text-muted text_styl">Please enter variable count</small>
+        </h4>
 
         <div class="card">
 
           <div class="card-body">
-
-            <div class="input-group mb-3">
-                <span class="input-group-text">Please enter variable count: </span>
-                <input type="text" class="form-control" id="variable_count" placeholder="variable eg: 1,2,3.." aria-label="eg: 1,2,3..">
+            <div class="col-md-2">
+              <div class="input-group mb-3">
+                  <input type="text" class="form-control " id="variable_count" placeholder="variable eg: 1,2,3.." aria-label="eg: 1,2,3..">
+              </div>
             </div>
 
             <div id="spinner_variable" class="d-flex justify-content-center" style="display: none !important;" ;>
                 <div class="spinner-grow" role="status">
                   <span class="visually-hidden">Loading...</span>
                 </div>
+                </div>
+            </div>
           </div>
-          <div class="input-group mb-3">
-            <span class="input-group-text">Equation: </span>
-        </div>
+
+          <h4 class="vl">
+            <small class="text-muted text_styl">Equation</small>
+              </h4>
+
+          <div class="card">
+
+            <div class="card-body">
+
           <form class="row g-3 align-items-center" id="math-function">
           </form>
           <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-          <button type="submit" id= "form-submit" style="display: none ; margin-top: 10px;" class="btn btn-outline-primary mb-2">Submit</button>
-          </div>
-          </div>
+          <button type="submit" id= "form-submit" style="display: none ; margin-top: 10px;" class="btn btn-outline-secondary mb-2">Submit</button>
+          
+          <div class="spinner-border m-3" id='eq_spnr' style="display: none ;" role="status">
+            <span class="sr-only"></span>
           </div>
 
-          <h4>
-        <small class="text-muted">Bound and Constraints</small>
+            <p id='success_message_eq' style="display: none ; margin-top: 20px;" ><em></em></p>
+
+          </div>
+
+          </div>
+        </div>
+
+          <h4 class="vl">
+        <small class="text-muted text_styl">Bound and Constraints</small>
           </h4>
 
         <div class="card">
@@ -69,7 +104,7 @@
                 </div>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-center">
                     <button  id = "button1"
-                    type="button" class="btn btn-outline-primary mb-2"  > apply </button>
+                    type="button" class="btn btn-outline-secondary mb-2"  > Apply </button>
                  </div>
               </div>
               <div class="col-6">
@@ -79,7 +114,7 @@
               </div>
               <div class="col-4">
                 <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                  <button type="submit" id= "form-submit-bound" style="display: none; margin-top: 100px; " class="btn btn-outline-primary mb-2"> Add Constraints</button>
+                  <button type="submit" id= "form-submit-bound" style="display: none; margin-top: 100px; " class="btn btn-outline-secondary mb-2"> Add Constraints</button>
                   </div>
               </div>
 
@@ -108,13 +143,13 @@ $( document ).ready(function() {
           for(var i=1;i<=variablecount;i++){
             dynamic_html = dynamic_html.concat(`
             <div class="col-sm-1">
-              <input type="text" class="form-control form-control-sm" id=${'x'+i} placeholder=" ">
+              <input type="text"  name='denoted' class="form-control form-control-sm" id=${'_' + Math.random().toString(36).substr(2, 9)} placeholder=" ">
             </div>
             <div class="col-auto">
               <label for="staticEmail2">${ 'X'+i+'^'}</label>
             </div>
               <div class="col-sm-1">
-              <input type="text" class="form-control form-control-sm" id=${'x'+i} placeholder=" ">
+              <input type="text"  name='power' class="form-control form-control-sm" id=${'_' + Math.random().toString(36).substr(2, 9)} placeholder=" ">
             </div>
               <div class="col-auto">
               <label for="staticEmail2" >${i==variablecount? ' ' :  ' + ' }</label>
@@ -140,7 +175,7 @@ $( document ).ready(function() {
             <div class="form-check">
               <input class="form-check-input" name='values' type="checkbox" value=${'x'+i} id=${'X'+i+'b'}>
               <label class="form-check-label" for="flexCheckDefault">
-                ${'x'+i}
+                ${'X'+i}
               </label>
             </div>            
             `)
@@ -160,6 +195,54 @@ $( document ).ready(function() {
 
   </script>
 
+<script>
+  $("#form-submit").on("click", function(){
+    var denoted = [];
+    var power = [];
+    $("#eq_spnr").show();
+    $('#math-function input, #math-function select').each(
+    function(index){  
+          var input = $(this);
+          if (input.attr('name') == 'denoted'){
+            denoted.push(parseInt(input.val()));
+          }else{
+            power.push(parseInt(input.val()));
+          }
+ 
+        }
+      );
+      var datav = JSON.stringify({'denoted':denoted,'power':power});
+    $.ajax({
+        type: 'POST',
+        contentType: 'application/json',
+        url: '/post/data',
+        dataType : 'json',
+        data:datav,
+        url: "/equation",
+        success: function(data){
+          $("#eq_spnr").hide();
+          $("#success_message_eq").html('');
+          if(data.code == 200){
+            $("#success_message_eq").html(data.message);
+            $("#success_message_eq").show();
+            console.log(data.message);
+          }
+          else if(data.code == 400){
+            $("#success_message_eq").html(data.message);
+            $("#success_message_eq").show();
+            console.log(data.message);
+          }
+          var buf1=data;
+          console.log(data);
+        }
+    })
+
+});
+</script>
+
+
+
+<!-- below bund and constraints check box value dynamic section -->
 <script>
   $(document).ready(function(){
     $("#button1").click(function() {
