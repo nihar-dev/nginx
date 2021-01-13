@@ -96,25 +96,38 @@
         <div class="card">
           <div class="card-body">
 
-            <div class="row">
+            <div class="row" id='bound_section' style="display: none ;" >
 
               <div class="col-2"  >
                 <div id='bound_scroll' style="height: 250px; overflow-y: scroll;">
 
                 </div>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                <div  class="d-grid gap-2 d-md-flex justify-content-md-center" style="margin-top: 10px;">
                     <button  id = "button1"
-                    type="button" class="btn btn-outline-secondary mb-2"  > Apply </button>
+                    type="button" class="btn btn-outline-secondary mb-2"> Apply </button>
                  </div>
               </div>
               <div class="col-6">
-                <div id="main_content_for_bound">
-                  
-                </div>
+                <form class="row g-3 align-items-center" id="main_content_for_bound">
+                </form>
               </div>
               <div class="col-4">
+                
+                <div  style="height: 150px; overflow-y: scroll;">
+                  <ul id='add_content_scroll' class="list-group list-group-flush">
+
+                  </ul>
+                </div>
+                <div  style="height: 100px; overflow-y: scroll;">
+                  <p id='lower_bound' style="display: none ; margin-top: 20px;" >Lower Bound : <em id='lower_bound_inner_text'></em></p>
+                  <p id='upper_bound' style="display: none ;" >Upper Bound :<em id='upper_bound_inner_text'></em></p>
+                </div>
+                <p class="d-grid gap-2 d-md-flex justify-content-md-center" id='success_message_bound' style="display: none ; margin-top: 10px;" ><em></em></p>
+
                 <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                  <button type="submit" id= "form-submit-bound" style="display: none; margin-top: 100px; " class="btn btn-outline-secondary mb-2"> Add Constraints</button>
+                  <button type="submit" id= "form-clear-bound" style="display: none; " class="btn btn-outline-secondary mb-2" aria-disabled="true" > Clear</button>
+                  <button type="submit" id= "form-add-constraints-bound" style="display: none;  " class="btn btn-outline-secondary mb-2"> Add Constraints</button>
+                  <button type="submit" id= "form-submit-bound" style="display: none; " class="btn btn-outline-secondary mb-2"> Submit</button>
                   </div>
               </div>
 
@@ -159,7 +172,6 @@ $( document ).ready(function() {
           }
           
         }
-        console.log(variable_string);
         var $el = $('#math-function');
         $el.empty();
         $el.append(dynamic_html);
@@ -182,11 +194,13 @@ $( document ).ready(function() {
           }
           
         }
-        console.log(variable_string);
         var $var_bound = $('#bound_scroll');
         $var_bound.empty();
         $var_bound.append(dynamic_html_bound);
+        $("#bound_section").show();
         $("#form-submit-bound").show();
+        $("#form-add-constraints-bound").show();
+        
    
     });
 
@@ -250,16 +264,174 @@ $( document ).ready(function() {
         var p=$("#main_content_for_bound");
         $(p).html("you have selected:");
         $.each($("input[name='values']:checked"), function() {
-            // $(p).html($(p).html() + '<br>' + $(this).val());
-            arr.push($(this).val());
-          // console.log($(this).val());
+            arr.push($(this).val().toUpperCase());
 
         });
-        $(p).html($(p).html() + '<br>' + arr.join(':') );
-        // $('#main_content_for_bound').val(arr.join(':'));      
+
+        var filter_count =  arr.length
+        // -------------------Adding dynamic html --------------------------------------
+        variable_string = '';
+        dynamic_html  =``;
+        if(filter_count > 0 && filter_count === 1){
+             dynamic_html = dynamic_html.concat(`  
+                <div class="col-sm-1">
+                    <input type="text"  name='pre-var-single' class="form-control form-control-sm" id=${ arr[0] } placeholder=" ">
+                </div>
+                <div class="col-auto">
+                    <label for="staticEmail2" > < </label>
+                </div>
+                <div class="col-auto">
+                  <label for="staticEmail2" name='single'>${ arr[0] }</label>
+                </div>
+                <div class="col-auto">
+                    <label for="staticEmail2" > < </label>
+                </div>
+                <div class="col-sm-1">
+                    <input type="text"  name='post-var-single' class="form-control form-control-sm" id=${ arr[0] } placeholder=" ">
+                </div>
+                     `)       
+
+          }else if(filter_count >0 && filter_count > 1){
+
+            for(var i=0;i<=filter_count-1;i++){
+
+            dynamic_html = dynamic_html.concat(`
+                <div class="col-sm-1">
+                  <input type="text"  name='pre-var-multi' class="form-control form-control-sm" id=${arr[i]} placeholder=" ">
+                </div>
+                <div class="col-auto">
+                  <label for="staticEmail2" name='multi'>${ arr[i] }</label>
+                </div>
+                <div class="col-auto">
+                  <label for="staticEmail2" >${i==filter_count-1? '<= ' :  ' + ' }</label>
+                </div>
+                ${i==filter_count-1? ` 
+                  <div class="col-sm-2">
+                  <input type="text"  name='post-var-multi' class="form-control form-control-sm" id='' placeholder=" ">
+
+                </div>
+                  ` :  ' ' }
+
+            
+            `)
+          }
+        }
+        var $el = $('#main_content_for_bound');
+        $el.empty();
+        $el.append(dynamic_html);
+
+        // $(p).html($(p).html() + '<br>' + arr.join(':') );
     }); 
 });
 </script>
+
+<!-- Add constraint to generate list when user press button belong to add constraints. -->
+<script>
+  $("#form-add-constraints-bound").on("click", function(){
+    var pre_var =[];
+    var post_var=[];
+    var lower_bound = [];
+    var upper_bound = [];
+    let result = ' '
+    let flag = ''
+    $('#main_content_for_bound input,#main_content_for_bound select').each(
+    function(index){  
+          var input = $(this);
+          if (input.attr('name') == 'pre-var-single' || input.attr('name') == 'post-var-single'){
+            flag = 'pre-var-single';
+            pre_var.push(input.val())
+            pre_var.push(input.attr('id'))
+            // aditional Addition
+            input.attr('name') == 'post-var-single' ? upper_bound.push(input.val()):lower_bound.push(input.val());
+
+          }else if (input.attr('name') == 'pre-var-multi' || input.attr('name') == 'post-var-multi' ){
+            pre_var.push(input.val()+input.attr('id'))
+            flag = 'pre-var-multi';
+          }
+        }
+      );
+      if( flag === 'pre-var-multi' ){
+          for(var i=0;i<pre_var.length;i++){
+            i == pre_var.length-1 ? pre_var[i] = ' <= ' + pre_var[i] : i == pre_var.length-2 ? pre_var[i]=pre_var[i] : pre_var[i]=pre_var[i] + "+ ";
+        }
+        result = "".concat(...pre_var);
+      }else if( flag === 'pre-var-single' ){
+        result = pre_var[0] + ' < '+  pre_var[1] + ' < '+ pre_var[2];
+      }
+
+      console.log(result);
+        // ---------------------------------------------------------------
+
+        // bound_scroll
+        dynamic_html_bound  =``;
+        $("#form-clear-bound").show();
+        dynamic_html_bound = dynamic_html_bound.concat(`
+            <li class="list-group-item">${result}</li>           
+            `)
+        var $var_bound = $('#add_content_scroll');
+        $var_bound.append(dynamic_html_bound);
+
+        // ----------------------Lower bound and upper bound------------------------------------------------------
+        $("#lower_bound").show();
+        dynamic_html_bound  =``;
+        dynamic_html_bound = dynamic_html_bound.concat(` ${lower_bound}`)
+        var $var_bound = $('#lower_bound_inner_text');
+        $var_bound.append(dynamic_html_bound);
+        // ----------------------------------------------------------------------------------------------------------
+        $("#upper_bound").show();
+        dynamic_html_bound  =``;
+        dynamic_html_bound = dynamic_html_bound.concat(` ${upper_bound}`)
+        var $var_bound = $('#upper_bound_inner_text');
+        $var_bound.append(dynamic_html_bound);
+        // -----------------------------------------------------------------------------------------------------------
+
+  });
+  
+  </script>
+<script>
+  $("#form-clear-bound").on("click", function(){
+    var $var_bound = $('#add_content_scroll');
+        $var_bound.empty();
+  });
+      </script>
+
+<script>
+  $("#form-submit-bound").on("click", function(){
+    var final_submit = [];
+    var power = [];
+    $('#add_content_scroll li').each(function(){
+      let ali = $(this);
+      final_submit.push(ali.text())
+      console.log(final_submit);
+    });
+      var datav = JSON.stringify({'final_submit':final_submit});
+    $.ajax({
+        type: 'POST',
+        contentType: 'application/json',
+        url: '/post/data',
+        dataType : 'json',
+        data:datav,
+        url: "/boundConst",
+        success: function(data){
+          $("#eq_spnr").hide();
+          $("#success_message_bound").html('');
+          if(data.code == 200){
+            $("#success_message_bound").html(data.message);
+            $("#success_message_bound").show();
+            console.log(data.message);
+          }
+          else if(data.code == 400){
+            $("#success_message_bound").html(data.message);
+            $("#success_message_bound").show();
+            console.log(data.message);
+          }
+          var buf1=data;
+          console.log(data);
+        }
+    })
+
+  });
+      </script>
 
 
   </body>
