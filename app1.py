@@ -24,6 +24,26 @@ def equation():
    res = json.dumps(response)
    return res
 
+
+@app.route('/boundConst', methods=['GET','POST'])
+def boundConst():
+   response = {}
+   jsonData = request.get_json()
+   print(jsonData)
+
+   final_submit = jsonData['final_submit']
+
+   if None not in final_submit  and len(final_submit) > 0 :
+      response['message'] = 'Successfully Added.'
+      response['code'] = 200
+   else:
+      response['message'] = 'Error, Please make sure to fill all field.'
+      response['code'] = 400
+      
+   res = json.dumps(response)
+   return res
+
+
     
 if __name__ == '__main__':
    app.run(debug = True)
