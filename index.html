@@ -34,12 +34,32 @@
       .text_styl{
         margin-left: 10px;
       }
+      /* -------------------Scroll bar custom design start-------------------- */
+      /* width */
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
 
+      /* Track */
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1; 
+      }
+      
+      /* Handle */
+      ::-webkit-scrollbar-thumb {
+        background:#3b4044ce ; 
+      }
+
+      /* Handle on hover */
+      ::-webkit-scrollbar-thumb:hover {
+        background: #3b4044; 
+      }
+      /* -------------------Scroll bar custom design end-------------------- */
     </style>
   </head>
   <body>
     <div class="container">
-      <nav class="navbar navbar-expand-lg navbar-dark "  style="background-color: #ADA996;">
+      <nav class="navbar navbar-expand-lg sticky-top navbar-dark "  style="background-color: #ADA996;">
         <div class="container-fluid">
           <a class="navbar-brand" href="/"><p class="h3">Generic Optimization</p></a>
         </div>
@@ -51,9 +71,12 @@
         <div class="card">
 
           <div class="card-body">
-            <div class="col-md-2">
+            <div class="col-md-2" style="margin: 10px;">
               <div class="input-group mb-3">
                   <input type="text" class="form-control " id="variable_count" placeholder="variable eg: 1,2,3.." aria-label="eg: 1,2,3..">
+              </div>
+              <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <button type="submit" id= "initial-submit"  class="btn btn-outline-secondary mb-2">Submit</button>
               </div>
             </div>
 
@@ -72,12 +95,12 @@
           <div class="card">
 
             <div class="card-body">
-
-          <form class="row g-3 align-items-center" id="math-function">
-          </form>
-          <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-          <button type="submit" id= "form-submit" style="display: none ; margin-top: 10px;" class="btn btn-outline-secondary mb-2">Submit</button>
-          
+          <div style="margin: 10px;">
+            <form class="row g-3 align-items-center" id="math-function" >
+            </form>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+            <button type="submit" id= "form-submit" style="display: none ; margin-top: 10px;" class="btn btn-outline-secondary mb-2">Submit</button>
+          </div>
           <div class="spinner-border m-3" id='eq_spnr' style="display: none ;" role="status">
             <span class="sr-only"></span>
           </div>
@@ -90,45 +113,53 @@
         </div>
 
           <h4 class="vl">
-        <small class="text-muted text_styl">Bound and Constraints</small>
+        <small class="text-muted text_styl">Bounds and Constraints</small>
           </h4>
 
-        <div class="card">
+        <div class="card" style=" margin-bottom: 20px;">
           <div class="card-body">
 
-            <div class="row" id='bound_section' style="display: none ;" >
+            <div class="row" id='bound_section' style="display: none ; " >
 
               <div class="col-2"  >
-                <div id='bound_scroll' style="height: 250px; overflow-y: scroll;">
+                <div style="height: 250px; overflow-y: scroll;">
+                  <div id='bound_scroll' style="margin: 10px;" >
 
+                  </div>
                 </div>
-                <div  class="d-grid gap-2 d-md-flex justify-content-md-center" style="margin-top: 10px;">
+                <div  class="d-grid gap-2 d-md-flex justify-content-md-start" style="margin: 10px;">
                     <button  id = "button1"
                     type="button" class="btn btn-outline-secondary mb-2"> Apply </button>
                  </div>
               </div>
               <div class="col-6">
-                <form class="row g-3 align-items-center" id="main_content_for_bound">
-                </form>
+                <div style="height: 250px; overflow-y: scroll;">
+                  <form class="row g-3 align-items-center" id="main_content_for_bound" style="margin:5px;">
+                  </form>
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start" style="margin: 10px;">
+                  <button type="submit" id= "form-add-constraints-bound" style="display: none;  " class="btn btn-outline-secondary mb-2"> Add Constraints</button>
+                  <button type="submit" id= "form-submit-bound" style="display: none; " class="btn btn-outline-secondary mb-2"> Submit</button>
+                <p class="d-grid gap-2 d-md-flex justify-content-md-center" id='success_message_bound' style="display: none ; margin-top: 10px;" ><em></em></p>
+
+                  </div>
+
               </div>
-              <div class="col-4">
-                
+              <div class="col-4" style="height: 250px;">
+                <div class="d-grid  d-md-flex justify-content-md-end">
+                <button type="submit" id= "form-clear-bound" style="display: none; " class="btn btn-outline-secondary  " aria-disabled="true" > Clear</button>
+              </div>
                 <div  style="height: 150px; overflow-y: scroll;">
                   <ul id='add_content_scroll' class="list-group list-group-flush">
 
                   </ul>
                 </div>
-                <div  style="height: 100px; overflow-y: scroll;">
-                  <p id='lower_bound' style="display: none ; margin-top: 20px;" >Lower Bound : <em id='lower_bound_inner_text'></em></p>
-                  <p id='upper_bound' style="display: none ;" >Upper Bound :<em id='upper_bound_inner_text'></em></p>
+                <div  style="height: 130px; overflow-y: scroll;">
+                  <p id='lower_bound' style="display: none ; margin-top: 10px;" >Lower Bound : [ <em id='lower_bound_inner_text'></em> ] </p>
+                  <p id='upper_bound' style="display: none ;" >Upper Bound : [ <em id='upper_bound_inner_text'></em> ] </p>
+                  <p id='equation_const' style="display: none ;" >Constraints List : [ <em id='equation_constraints_inner_text'></em> ] </p>
                 </div>
-                <p class="d-grid gap-2 d-md-flex justify-content-md-center" id='success_message_bound' style="display: none ; margin-top: 10px;" ><em></em></p>
 
-                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                  <button type="submit" id= "form-clear-bound" style="display: none; " class="btn btn-outline-secondary mb-2" aria-disabled="true" > Clear</button>
-                  <button type="submit" id= "form-add-constraints-bound" style="display: none;  " class="btn btn-outline-secondary mb-2"> Add Constraints</button>
-                  <button type="submit" id= "form-submit-bound" style="display: none; " class="btn btn-outline-secondary mb-2"> Submit</button>
-                  </div>
               </div>
 
             </div>
@@ -138,16 +169,14 @@
         </div>
 
       </div>
-
-    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
   
   <script>
 $( document ).ready(function() {
-  $("#variable_count").change(function() {   
+  $("#initial-submit").on("click", function(){   
         // $("#spinner_variable").show();
-        console.log( "variable count: ",$(this).val());
-        var variablecount  = $(this).val();
+        console.log( "variable count: ",$("#variable_count").val());
+        var variablecount  = $("#variable_count").val();
 
         // ---------------------------------------------------------
         variable_string = '';
@@ -383,15 +412,26 @@ $( document ).ready(function() {
         dynamic_html_bound = dynamic_html_bound.concat(` ${upper_bound}`)
         var $var_bound = $('#upper_bound_inner_text');
         $var_bound.append(dynamic_html_bound);
-        // -----------------------------------------------------------------------------------------------------------
-
+        // ----------------------Equation Constraints-------------------------------------------------------------------------------------
+        $("#equation_const").show();
+        dynamic_html_bound  =``;
+        dynamic_html_bound = dynamic_html_bound.concat(` ${upper_bound}`)
+        var $var_bound = $('#equation_constraints_inner_text');
+        $var_bound.append(dynamic_html_bound);
+        
   });
   
   </script>
 <script>
   $("#form-clear-bound").on("click", function(){
-    var $var_bound = $('#add_content_scroll');
+        var $var_bound = $('#add_content_scroll');
         $var_bound.empty();
+        var $lwr_bound = $('#lower_bound_inner_text');
+        $lwr_bound.empty();
+        var $upr_bound = $('#upper_bound_inner_text');
+        $upr_bound.empty();
+        var $eq_const_bound = $('#equation_constraints_inner_text');
+        $eq_const_bound.empty();
   });
       </script>
 
