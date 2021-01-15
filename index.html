@@ -55,6 +55,13 @@
         background: #3b4044; 
       }
       /* -------------------Scroll bar custom design end-------------------- */
+      /* ----------------------Adde design for horizontal line----------------- */
+      .hr2 {
+        border: 0;
+        height: 3px;
+        background: #095484;
+        background-image: linear-gradient(to right, #ccc, #095484, #ccc);
+      }
     </style>
   </head>
   <body>
@@ -133,6 +140,7 @@
                  </div>
               </div>
               <div class="col-6">
+                
                 <div style="height: 250px; overflow-y: scroll;">
                   <form class="row g-3 align-items-center" id="main_content_for_bound" style="margin:5px;">
                   </form>
@@ -145,19 +153,27 @@
                   </div>
 
               </div>
+              
               <div class="col-4" style="height: 250px;">
+                <div>
+                <!-- <p>Equation History</p> -->
                 <div class="d-grid  d-md-flex justify-content-md-end">
-                <button type="submit" id= "form-clear-bound" style="display: none; " class="btn btn-outline-secondary  " aria-disabled="true" > Clear</button>
+                <button type="submit" id= "form-clear-bound" style="display: none; " class="btn btn-outline-secondary btn-sm " aria-disabled="true" > Clear</button>
               </div>
+            </div>
+              
+              <!-- <hr class="hr2" /> -->
                 <div  style="height: 150px; overflow-y: scroll;">
                   <ul id='add_content_scroll' class="list-group list-group-flush">
 
                   </ul>
                 </div>
+                <!-- <p>Generated Data</p>
+                <hr class="hr2" /> -->
                 <div  style="height: 130px; overflow-y: scroll;">
-                  <p id='lower_bound' style="display: none ; margin-top: 10px;" >Lower Bound : [ <em id='lower_bound_inner_text'></em> ] </p>
-                  <p id='upper_bound' style="display: none ;" >Upper Bound : [ <em id='upper_bound_inner_text'></em> ] </p>
-                  <p id='equation_const' style="display: none ;" >Constraints List : [ <em id='equation_constraints_inner_text'></em> ] </p>
+                  <p id='lower_bound' style="display: none ;" >Lower Bound : <em id='lower_bound_inner_text'></em>  </p>
+                  <p id='upper_bound' style="display: none ;" >Upper Bound : <em id='upper_bound_inner_text'></em> </p>
+                  <p id='equation_const' style="display: none ;" >Constraints List : <em id='equation_constraints_inner_text'></em> </p>
                 </div>
 
               </div>
@@ -172,17 +188,21 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
   
   <script>
+      var global_variable_count = 0;
+      var global_var_template = {};
 $( document ).ready(function() {
+
   $("#initial-submit").on("click", function(){   
         // $("#spinner_variable").show();
         console.log( "variable count: ",$("#variable_count").val());
         var variablecount  = $("#variable_count").val();
-
+        global_variable_count = variablecount;
         // ---------------------------------------------------------
         variable_string = '';
         dynamic_html  =``;
         if(variablecount > 0){
           for(var i=1;i<=variablecount;i++){
+            global_var_template['X'+i] = 0;
             dynamic_html = dynamic_html.concat(`
             <div class="col-sm-1">
               <input type="text"  name='denoted' class="form-control form-control-sm" id=${'_' + Math.random().toString(36).substr(2, 9)} placeholder=" ">
@@ -356,13 +376,15 @@ $( document ).ready(function() {
 
 <!-- Add constraint to generate list when user press button belong to add constraints. -->
 <script>
+    var lower_bound_list = [];
+    var upper_bound_list = [];
+    var const_equation_list = [];
   $("#form-add-constraints-bound").on("click", function(){
     var pre_var =[];
     var post_var=[];
-    var lower_bound = [];
-    var upper_bound = [];
-    let result = ' '
-    let flag = ''
+    let const_eq={};
+    let result = '';
+    let flag = '';
     $('#main_content_for_bound input,#main_content_for_bound select').each(
     function(index){  
           var input = $(this);
@@ -371,15 +393,18 @@ $( document ).ready(function() {
             pre_var.push(input.val())
             pre_var.push(input.attr('id'))
             // aditional Addition
-            input.attr('name') == 'post-var-single' ? upper_bound.push(input.val()):lower_bound.push(input.val());
+            input.attr('name') == 'post-var-single' ? upper_bound_list.push(parseInt(input.val())):lower_bound_list.push(parseInt(input.val()));
 
           }else if (input.attr('name') == 'pre-var-multi' || input.attr('name') == 'post-var-multi' ){
-            pre_var.push(input.val()+input.attr('id'))
+            pre_var.push(input.val()+input.attr('id')); //this will help us to visible our equation format.
+            const_eq[input.attr('id')==''?'eq_right':input.attr('id')]=parseInt(input.val());
             flag = 'pre-var-multi';
           }
         }
       );
+
       if( flag === 'pre-var-multi' ){
+        const_equation_list.push(generate_equation_constraints(const_eq));
           for(var i=0;i<pre_var.length;i++){
             i == pre_var.length-1 ? pre_var[i] = ' <= ' + pre_var[i] : i == pre_var.length-2 ? pre_var[i]=pre_var[i] : pre_var[i]=pre_var[i] + "+ ";
         }
@@ -403,37 +428,36 @@ $( document ).ready(function() {
         // ----------------------Lower bound and upper bound------------------------------------------------------
         $("#lower_bound").show();
         dynamic_html_bound  =``;
-        dynamic_html_bound = dynamic_html_bound.concat(` ${lower_bound}`)
+        dynamic_html_bound = dynamic_html_bound.concat(` ${JSON.stringify(lower_bound_list)}`)
         var $var_bound = $('#lower_bound_inner_text');
+        $var_bound.empty();
         $var_bound.append(dynamic_html_bound);
         // ----------------------------------------------------------------------------------------------------------
         $("#upper_bound").show();
         dynamic_html_bound  =``;
-        dynamic_html_bound = dynamic_html_bound.concat(` ${upper_bound}`)
+        dynamic_html_bound = dynamic_html_bound.concat(` ${JSON.stringify(upper_bound_list)}`)
         var $var_bound = $('#upper_bound_inner_text');
+        $var_bound.empty();
         $var_bound.append(dynamic_html_bound);
         // ----------------------Equation Constraints-------------------------------------------------------------------------------------
         $("#equation_const").show();
         dynamic_html_bound  =``;
-        dynamic_html_bound = dynamic_html_bound.concat(` ${upper_bound}`)
+        console.log('before append',const_equation_list);
+        dynamic_html_bound = dynamic_html_bound.concat(` ${JSON.stringify(const_equation_list)}`)
         var $var_bound = $('#equation_constraints_inner_text');
+        $var_bound.empty();
         $var_bound.append(dynamic_html_bound);
         
   });
   
+  const generate_equation_constraints = (input_list)=>{
+    Object.keys(input_list).forEach(key =>{
+      key === 'eq_right' ? ! input_list[key] ? global_var_template['eq_right'] = 0 : global_var_template[key] = input_list[key] : global_var_template[key] = input_list[key] ;     //added this line to help us rid of null when user doesnot put any value.
+    })
+    return Object.values(global_var_template);
+  }
   </script>
-<script>
-  $("#form-clear-bound").on("click", function(){
-        var $var_bound = $('#add_content_scroll');
-        $var_bound.empty();
-        var $lwr_bound = $('#lower_bound_inner_text');
-        $lwr_bound.empty();
-        var $upr_bound = $('#upper_bound_inner_text');
-        $upr_bound.empty();
-        var $eq_const_bound = $('#equation_constraints_inner_text');
-        $eq_const_bound.empty();
-  });
-      </script>
+
 
 <script>
   $("#form-submit-bound").on("click", function(){
@@ -444,7 +468,8 @@ $( document ).ready(function() {
       final_submit.push(ali.text())
       console.log(final_submit);
     });
-      var datav = JSON.stringify({'final_submit':final_submit});
+      console.log(lower_bound_list);
+      var datav = JSON.stringify({'lower_bound':lower_bound_list,'upper_bound':upper_bound_list,'equation_constraints':const_equation_list});
     $.ajax({
         type: 'POST',
         contentType: 'application/json',
@@ -474,5 +499,18 @@ $( document ).ready(function() {
       </script>
 
 
+
+<script>
+  $("#form-clear-bound").on("click", function(){
+        var $var_bound = $('#add_content_scroll');
+        $var_bound.empty();
+        var $lwr_bound = $('#lower_bound_inner_text');
+        $lwr_bound.empty();
+        var $upr_bound = $('#upper_bound_inner_text');
+        $upr_bound.empty();
+        var $eq_const_bound = $('#equation_constraints_inner_text');
+        $eq_const_bound.empty();
+  });
+      </script>
   </body>
 </html>
