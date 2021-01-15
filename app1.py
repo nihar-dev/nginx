@@ -31,7 +31,7 @@ def boundConst():
    jsonData = request.get_json()
    print(jsonData)
 
-   final_submit = jsonData['final_submit']
+   final_submit = jsonData['lower_bound']
 
    if None not in final_submit  and len(final_submit) > 0 :
       response['message'] = 'Successfully Added.'
