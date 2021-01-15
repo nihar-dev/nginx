@@ -379,22 +379,26 @@ $( document ).ready(function() {
     var lower_bound_list = [];
     var upper_bound_list = [];
     var const_equation_list = [];
+    let flag = '';
   $("#form-add-constraints-bound").on("click", function(){
+    var pre_var_eq = {};
+    var post_var_eq = {};
+    let const_eq={};
     var pre_var =[];
     var post_var=[];
-    let const_eq={};
     let result = '';
-    let flag = '';
     $('#main_content_for_bound input,#main_content_for_bound select').each(
     function(index){  
           var input = $(this);
           if (input.attr('name') == 'pre-var-single' || input.attr('name') == 'post-var-single'){
-            flag = 'pre-var-single';
+            flag = input.attr('name') === 'pre-var-single' ? 'pre-var-single' :'post-var-single';
             pre_var.push(input.val())
             pre_var.push(input.attr('id'))
             // aditional Addition
-            input.attr('name') == 'post-var-single' ? upper_bound_list.push(parseInt(input.val())):lower_bound_list.push(parseInt(input.val()));
-
+            // input.attr('name') == 'post-var-single' ? upper_bound_list.push(parseInt(input.val())):lower_bound_list.push(parseInt(input.val()));
+            input.attr('name') == 'post-var-single' ? post_var_eq[input.attr('id')]=parseInt(input.val()) :pre_var_eq[input.attr('id')]=parseInt(input.val());
+          console.log('post_var_equation',post_var_eq);
+          console.log('pre_var_equation',pre_var_eq);
           }else if (input.attr('name') == 'pre-var-multi' || input.attr('name') == 'post-var-multi' ){
             pre_var.push(input.val()+input.attr('id')); //this will help us to visible our equation format.
             const_eq[input.attr('id')==''?'eq_right':input.attr('id')]=parseInt(input.val());
@@ -409,7 +413,9 @@ $( document ).ready(function() {
             i == pre_var.length-1 ? pre_var[i] = ' <= ' + pre_var[i] : i == pre_var.length-2 ? pre_var[i]=pre_var[i] : pre_var[i]=pre_var[i] + "+ ";
         }
         result = "".concat(...pre_var);
-      }else if( flag === 'pre-var-single' ){
+      }else if( flag === 'pre-var-single' || flag === 'post-var-single' ){
+        lower_bound_list.push(generate_bounds(pre_var_eq));
+        upper_bound_list.push(generate_bounds(post_var_eq));
         result = pre_var[0] + ' < '+  pre_var[1] + ' < '+ pre_var[2];
       }
 
@@ -451,10 +457,21 @@ $( document ).ready(function() {
   });
   
   const generate_equation_constraints = (input_list)=>{
+    cloned_object = Object.assign({}, global_var_template);
     Object.keys(input_list).forEach(key =>{
-      key === 'eq_right' ? ! input_list[key] ? global_var_template['eq_right'] = 0 : global_var_template[key] = input_list[key] : global_var_template[key] = input_list[key] ;     //added this line to help us rid of null when user doesnot put any value.
+      key === 'eq_right' ? ! input_list[key] ? cloned_object['eq_right'] = 0 : cloned_object[key] = input_list[key] : cloned_object[key] = input_list[key] ;     //added this line to help us rid of null when user doesnot put any value.
     })
-    return Object.values(global_var_template);
+    return Object.values(cloned_object);
+  }
+
+  const generate_bounds = (input_list)=>{
+
+    cloned_object = Object.assign({}, global_var_template);
+    Object.keys(input_list).forEach(key =>{
+      cloned_object[key] = input_list[key];  //added this line to help us rid of null when user doesnot put any value.
+    })
+    console.log('object values',Object.values(cloned_object));
+    return Object.values(cloned_object);
   }
   </script>
 
@@ -510,6 +527,9 @@ $( document ).ready(function() {
         $upr_bound.empty();
         var $eq_const_bound = $('#equation_constraints_inner_text');
         $eq_const_bound.empty();
+        lower_bound_list = [];
+        upper_bound_list = [];
+        const_equation_list = [];
   });
       </script>
   </body>
