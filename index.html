@@ -1,536 +1,392 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.82.0">
+    <title>Maximus · v3.0</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        }
-      };
-      </script>
-      <script id="MathJax-script" async
-        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
-      </script>
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/dashboard/">
 
-    <title>Generic Optimisation</title>
+    
+
+    <!-- Bootstrap core CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
     <style>
-      body{
-        background: #ADA996;  /* fallback for old browsers */
-        background: -webkit-linear-gradient(to right, #EAEAEA, #DBDBDB, #F2F2F2, #ADA996);  /* Chrome 10-25, Safari 5.1-6 */
-        background: linear-gradient(to right, #EAEAEA, #DBDBDB, #F2F2F2, #ADA996); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
-      }
-      .vl {
-        margin-top: 10px;
-        border-left: 6px solid  #ADA996;
-      }
-      .text_styl{
-        margin-left: 10px;
-      }
-      /* -------------------Scroll bar custom design start-------------------- */
-      /* width */
-      ::-webkit-scrollbar {
-        width: 10px;
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
       }
 
-      /* Track */
-      ::-webkit-scrollbar-track {
-        background: #f1f1f1; 
-      }
-      
-      /* Handle */
-      ::-webkit-scrollbar-thumb {
-        background:#3b4044ce ; 
-      }
-
-      /* Handle on hover */
-      ::-webkit-scrollbar-thumb:hover {
-        background: #3b4044; 
-      }
-      /* -------------------Scroll bar custom design end-------------------- */
-      /* ----------------------Adde design for horizontal line----------------- */
-      .hr2 {
-        border: 0;
-        height: 3px;
-        background: #095484;
-        background-image: linear-gradient(to right, #ccc, #095484, #ccc);
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
       }
     </style>
+
+    
+    <!-- Custom styles for this template -->
+    <link href="dashboard.css" rel="stylesheet">
   </head>
   <body>
-    <div class="container">
-      <nav class="navbar navbar-expand-lg sticky-top navbar-dark "  style="background-color: #ADA996;">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="/"><p class="h3">Generic Optimization</p></a>
-        </div>
-      </nav>
-        <h4 class="vl">
-          <small class="text-muted text_styl">Please enter variable count</small>
-        </h4>
+    
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Maximus v3.0 UAE</a>
+  
+  <!-- <img src="..." class="rounded-circle" alt="..."> -->
+  <!-- <i class="fas fa-globe"></i> -->
 
-        <div class="card">
 
-          <div class="card-body">
-            <div class="col-md-2" style="margin: 10px;">
-              <div class="input-group mb-3">
-                  <input type="text" class="form-control " id="variable_count" placeholder="variable eg: 1,2,3.." aria-label="eg: 1,2,3..">
-              </div>
-              <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                <button type="submit" id= "initial-submit"  class="btn btn-outline-secondary mb-2">Submit</button>
-              </div>
-            </div>
+  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <!-- <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search"> -->
 
-            <div id="spinner_variable" class="d-flex justify-content-center" style="display: none !important;" ;>
-                <div class="spinner-grow" role="status">
-                  <span class="visually-hidden">Loading...</span>
-                </div>
-                </div>
-            </div>
-          </div>
-
-          <h4 class="vl">
-            <small class="text-muted text_styl">Equation</small>
-              </h4>
-
-          <div class="card">
-
-            <div class="card-body">
-          <div style="margin: 10px;">
-            <form class="row g-3 align-items-center" id="math-function" >
-            </form>
-            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-            <button type="submit" id= "form-submit" style="display: none ; margin-top: 10px;" class="btn btn-outline-secondary mb-2">Submit</button>
-          </div>
-          <div class="spinner-border m-3" id='eq_spnr' style="display: none ;" role="status">
-            <span class="sr-only"></span>
-          </div>
-
-            <p id='success_message_eq' style="display: none ; margin-top: 20px;" ><em></em></p>
-
-          </div>
-
-          </div>
-        </div>
-
-          <h4 class="vl">
-        <small class="text-muted text_styl">Bounds and Constraints</small>
-          </h4>
-
-        <div class="card" style=" margin-bottom: 20px;">
-          <div class="card-body">
-
-            <div class="row" id='bound_section' style="display: none ; " >
-
-              <div class="col-2"  >
-                <div style="height: 250px; overflow-y: scroll;">
-                  <div id='bound_scroll' style="margin: 10px;" >
-
-                  </div>
-                </div>
-                <div  class="d-grid gap-2 d-md-flex justify-content-md-start" style="margin: 10px;">
-                    <button  id = "button1"
-                    type="button" class="btn btn-outline-secondary mb-2"> Apply </button>
-                 </div>
-              </div>
-              <div class="col-6">
-                
-                <div style="height: 250px; overflow-y: scroll;">
-                  <form class="row g-3 align-items-center" id="main_content_for_bound" style="margin:5px;">
-                  </form>
-                </div>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-start" style="margin: 10px;">
-                  <button type="submit" id= "form-add-constraints-bound" style="display: none;  " class="btn btn-outline-secondary mb-2"> Add Constraints</button>
-                  <button type="submit" id= "form-submit-bound" style="display: none; " class="btn btn-outline-secondary mb-2"> Submit</button>
-                <p class="d-grid gap-2 d-md-flex justify-content-md-center" id='success_message_bound' style="display: none ; margin-top: 10px;" ><em></em></p>
-
-                  </div>
-
-              </div>
-              
-              <div class="col-4" style="height: 250px;">
-                <div>
-                <!-- <p>Equation History</p> -->
-                <div class="d-grid  d-md-flex justify-content-md-end">
-                <button type="submit" id= "form-clear-bound" style="display: none; " class="btn btn-outline-secondary btn-sm " aria-disabled="true" > Clear</button>
-              </div>
-            </div>
-              
-              <!-- <hr class="hr2" /> -->
-                <div  style="height: 150px; overflow-y: scroll;">
-                  <ul id='add_content_scroll' class="list-group list-group-flush">
-
-                  </ul>
-                </div>
-                <!-- <p>Generated Data</p>
-                <hr class="hr2" /> -->
-                <div  style="height: 130px; overflow-y: scroll;">
-                  <p id='lower_bound' style="display: none ;" >Lower Bound : <em id='lower_bound_inner_text'></em>  </p>
-                  <p id='upper_bound' style="display: none ;" >Upper Bound : <em id='upper_bound_inner_text'></em> </p>
-                  <p id='equation_const' style="display: none ;" >Constraints List : <em id='equation_constraints_inner_text'></em> </p>
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
+  
+  <ul class="navbar-nav px-3">
+    <div class="d-flex">
+      <div class="circle">
+        <span class="initials">NM</span>
       </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
-  
-  <script>
-      var global_variable_count = 0;
-      var global_var_template = {};
-$( document ).ready(function() {
+      <p class="h6">Nihar Mishra</p>
+      <!-- <li class="nav-item text-nowrap px-3">
+        <a class="nav-link" href="#">Sign out</a>
+      </li> -->
+    </div>
 
-  $("#initial-submit").on("click", function(){   
-        // $("#spinner_variable").show();
-        console.log( "variable count: ",$("#variable_count").val());
-        var variablecount  = $("#variable_count").val();
-        global_variable_count = variablecount;
-        // ---------------------------------------------------------
-        variable_string = '';
-        dynamic_html  =``;
-        if(variablecount > 0){
-          for(var i=1;i<=variablecount;i++){
-            global_var_template['X'+i] = 0;
-            dynamic_html = dynamic_html.concat(`
-            <div class="col-sm-1">
-              <input type="text"  name='denoted' class="form-control form-control-sm" id=${'_' + Math.random().toString(36).substr(2, 9)} placeholder=" ">
+  </ul>
+</header>
+
+<div class="container-fluid">
+  <div class="row">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div class="position-sticky pt-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="#">
+              <span data-feather="home"></span>
+              KPI Performance
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="file"></span>
+              Marketing Contribution
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="shopping-cart"></span>
+              CPA
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="#">
+              <span data-feather="users"></span>
+              Optimization
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="bar-chart-2"></span>
+              Simulation
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="layers"></span>
+              Hit Target
+            </a>
+          </li>
+        </ul>
+
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          <span>Saved reports</span>
+          <a class="link-secondary" href="#" aria-label="Add a new report">
+            <span data-feather="plus-circle"></span>
+          </a>
+        </h6>
+        <ul class="nav flex-column mb-2">
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="file-text"></span>
+              Current month
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span data-feather="file-text"></span>
+              Last quarter
+            </a>
+          </li>
+         
+        </ul>
+      </div>
+    </nav>
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h3">Optimization</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+            <span data-feather="calendar"></span>
+            This week
+          </button>
+        </div>
+      </div>
+
+      <!-- Cards -->
+      <div id="cards_landscape_wrap-2">
+        <div class="btn-group me-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+        </div>
+        <div class="container">
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                    <a href="">
+                        <div class="card-flyer">
+                            <div class="text-box">
+
+                                <div class="text-container">
+                                    <h6>Applications</h6>
+                                    <p>2984</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <a href="">
+                      <div class="card-flyer">
+                          <div class="text-box">
+
+                              <div class="text-container">
+                                  <h6>Optimized Application</h6>
+                                  <p>2984</p>
+                                </div>
+                          </div>
+                      </div>
+                  </a>
+              </div>
+              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                <a href="">
+                    <div class="card-flyer">
+                        <div class="text-box">
+
+                            <div class="text-container">
+                                <h6>Spends(in $)</h6>
+                                <p>2984</p>
+                              </div>
+                        </div>
+                    </div>
+                </a>
             </div>
-            <div class="col-auto">
-              <label for="staticEmail2">${ 'X'+i+'^'}</label>
+            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <a href="">
+                  <div class="card-flyer">
+                      <div class="text-box">
+
+                          <div class="text-container">
+                              <h6>Optimized Spends(in $)</h6>
+                              <p>2984</p>
+                            </div>
+                      </div>
+                  </div>
+              </a>
+          </div>
+          <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+            <a href="">
+                <div class="card-flyer">
+                    <div class="text-box">
+
+                        <div class="text-container">
+                            <h6>CPA (In $)</h6>
+                            <p>2984</p>
+                          </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+          <a href="">
+              <div class="card-flyer">
+                  <div class="text-box">
+
+                      <div class="text-container">
+                          <h6>Optimized CPA(In $)</h6>
+                          <p>2984</p>
+                        </div>
+                  </div>
+              </div>
+          </a>
+      </div>
             </div>
-              <div class="col-sm-1">
-              <input type="text"  name='power' class="form-control form-control-sm" id=${'_' + Math.random().toString(36).substr(2, 9)} placeholder=" ">
+    </div>
+    </div>
+<!-- Cards End-->
+        <div class="d-flex flex-row-reverse justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-top m-6">
+
+          <div class="btn-toolbar mb-2 mb-md-0 selectortop">
+            <h6 >View:  </h6>
+
+            <div class="btn-group me-2 align-items-center ">
+
+              <button type="button" class="btn btn-sm btn-outline-secondary">Yearly</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary">Half Yearly</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary">Quaterly</button>
             </div>
-              <div class="col-auto">
-              <label for="staticEmail2" >${i==variablecount? ' ' :  ' + ' }</label>
-            </div>
-            
-            `)
-          }
-          
-        }
-        var $el = $('#math-function');
-        $el.empty();
-        $el.append(dynamic_html);
 
-        $("#form-submit").show();
-        // ---------------------------------------------------------------
+          </div>
+        </div>
+      <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
 
-        // bound_scroll
-        dynamic_html_bound  =``;
-        if(variablecount > 0){
-          for(var i=1;i<=variablecount;i++){
-            dynamic_html_bound = dynamic_html_bound.concat(`
-            <div class="form-check">
-              <input class="form-check-input" name='values' type="checkbox" value=${'x'+i} id=${'X'+i+'b'}>
-              <label class="form-check-label" for="flexCheckDefault">
-                ${'X'+i}
-              </label>
-            </div>            
-            `)
-          }
-          
-        }
-        var $var_bound = $('#bound_scroll');
-        $var_bound.empty();
-        $var_bound.append(dynamic_html_bound);
-        $("#bound_section").show();
-        $("#form-submit-bound").show();
-        $("#form-add-constraints-bound").show();
-        
-   
-    });
-
-});
-
-
-  </script>
-
-<script>
-  $("#form-submit").on("click", function(){
-    var denoted = [];
-    var power = [];
-    $("#eq_spnr").show();
-    $('#math-function input, #math-function select').each(
-    function(index){  
-          var input = $(this);
-          if (input.attr('name') == 'denoted'){
-            denoted.push(parseInt(input.val()));
-          }else{
-            power.push(parseInt(input.val()));
-          }
- 
-        }
-      );
-      var datav = JSON.stringify({'denoted':denoted,'power':power});
-    $.ajax({
-        type: 'POST',
-        contentType: 'application/json',
-        url: '/post/data',
-        dataType : 'json',
-        data:datav,
-        url: "/equation",
-        success: function(data){
-          $("#eq_spnr").hide();
-          $("#success_message_eq").html('');
-          if(data.code == 200){
-            $("#success_message_eq").html(data.message);
-            $("#success_message_eq").show();
-            console.log(data.message);
-          }
-          else if(data.code == 400){
-            $("#success_message_eq").html(data.message);
-            $("#success_message_eq").show();
-            console.log(data.message);
-          }
-          var buf1=data;
-          console.log(data);
-        }
-    })
-
-});
-</script>
-
-
-
-<!-- below bund and constraints check box value dynamic section -->
-<script>
-  $(document).ready(function(){
-    $("#button1").click(function() {
-        var arr=[];
-        var p=$("#main_content_for_bound");
-        $(p).html("you have selected:");
-        $.each($("input[name='values']:checked"), function() {
-            arr.push($(this).val().toUpperCase());
-
-        });
-
-        var filter_count =  arr.length
-        // -------------------Adding dynamic html --------------------------------------
-        variable_string = '';
-        dynamic_html  =``;
-        if(filter_count > 0 && filter_count === 1){
-             dynamic_html = dynamic_html.concat(`  
-                <div class="col-sm-1">
-                    <input type="text"  name='pre-var-single' class="form-control form-control-sm" id=${ arr[0] } placeholder=" ">
-                </div>
-                <div class="col-auto">
-                    <label for="staticEmail2" > < </label>
-                </div>
-                <div class="col-auto">
-                  <label for="staticEmail2" name='single'>${ arr[0] }</label>
-                </div>
-                <div class="col-auto">
-                    <label for="staticEmail2" > < </label>
-                </div>
-                <div class="col-sm-1">
-                    <input type="text"  name='post-var-single' class="form-control form-control-sm" id=${ arr[0] } placeholder=" ">
-                </div>
-                     `)       
-
-          }else if(filter_count >0 && filter_count > 1){
-
-            for(var i=0;i<=filter_count-1;i++){
-
-            dynamic_html = dynamic_html.concat(`
-                <div class="col-sm-1">
-                  <input type="text"  name='pre-var-multi' class="form-control form-control-sm" id=${arr[i]} placeholder=" ">
-                </div>
-                <div class="col-auto">
-                  <label for="staticEmail2" name='multi'>${ arr[i] }</label>
-                </div>
-                <div class="col-auto">
-                  <label for="staticEmail2" >${i==filter_count-1? '<= ' :  ' + ' }</label>
-                </div>
-                ${i==filter_count-1? ` 
-                  <div class="col-sm-2">
-                  <input type="text"  name='post-var-multi' class="form-control form-control-sm" id='' placeholder=" ">
-
-                </div>
-                  ` :  ' ' }
-
-            
-            `)
-          }
-        }
-        var $el = $('#main_content_for_bound');
-        $el.empty();
-        $el.append(dynamic_html);
-
-        // $(p).html($(p).html() + '<br>' + arr.join(':') );
-    }); 
-});
-</script>
-
-<!-- Add constraint to generate list when user press button belong to add constraints. -->
-<script>
-    var lower_bound_list = [];
-    var upper_bound_list = [];
-    var const_equation_list = [];
-    let flag = '';
-  $("#form-add-constraints-bound").on("click", function(){
-    var pre_var_eq = {};
-    var post_var_eq = {};
-    let const_eq={};
-    var pre_var =[];
-    var post_var=[];
-    let result = '';
-    $('#main_content_for_bound input,#main_content_for_bound select').each(
-    function(index){  
-          var input = $(this);
-          if (input.attr('name') == 'pre-var-single' || input.attr('name') == 'post-var-single'){
-            flag = input.attr('name') === 'pre-var-single' ? 'pre-var-single' :'post-var-single';
-            pre_var.push(input.val())
-            pre_var.push(input.attr('id'))
-            // aditional Addition
-            // input.attr('name') == 'post-var-single' ? upper_bound_list.push(parseInt(input.val())):lower_bound_list.push(parseInt(input.val()));
-            input.attr('name') == 'post-var-single' ? post_var_eq[input.attr('id')]=parseInt(input.val()) :pre_var_eq[input.attr('id')]=parseInt(input.val());
-          console.log('post_var_equation',post_var_eq);
-          console.log('pre_var_equation',pre_var_eq);
-          }else if (input.attr('name') == 'pre-var-multi' || input.attr('name') == 'post-var-multi' ){
-            pre_var.push(input.val()+input.attr('id')); //this will help us to visible our equation format.
-            const_eq[input.attr('id')==''?'eq_right':input.attr('id')]=parseInt(input.val());
-            flag = 'pre-var-multi';
-          }
-        }
-      );
-
-      if( flag === 'pre-var-multi' ){
-        const_equation_list.push(generate_equation_constraints(const_eq));
-          for(var i=0;i<pre_var.length;i++){
-            i == pre_var.length-1 ? pre_var[i] = ' <= ' + pre_var[i] : i == pre_var.length-2 ? pre_var[i]=pre_var[i] : pre_var[i]=pre_var[i] + "+ ";
-        }
-        result = "".concat(...pre_var);
-      }else if( flag === 'pre-var-single' || flag === 'post-var-single' ){
-        lower_bound_list.push(generate_bounds(pre_var_eq));
-        upper_bound_list.push(generate_bounds(post_var_eq));
-        result = pre_var[0] + ' < '+  pre_var[1] + ' < '+ pre_var[2];
-      }
-
-      console.log(result);
-        // ---------------------------------------------------------------
-
-        // bound_scroll
-        dynamic_html_bound  =``;
-        $("#form-clear-bound").show();
-        dynamic_html_bound = dynamic_html_bound.concat(`
-            <li class="list-group-item">${result}</li>           
-            `)
-        var $var_bound = $('#add_content_scroll');
-        $var_bound.append(dynamic_html_bound);
-
-        // ----------------------Lower bound and upper bound------------------------------------------------------
-        $("#lower_bound").show();
-        dynamic_html_bound  =``;
-        dynamic_html_bound = dynamic_html_bound.concat(` ${JSON.stringify(lower_bound_list)}`)
-        var $var_bound = $('#lower_bound_inner_text');
-        $var_bound.empty();
-        $var_bound.append(dynamic_html_bound);
-        // ----------------------------------------------------------------------------------------------------------
-        $("#upper_bound").show();
-        dynamic_html_bound  =``;
-        dynamic_html_bound = dynamic_html_bound.concat(` ${JSON.stringify(upper_bound_list)}`)
-        var $var_bound = $('#upper_bound_inner_text');
-        $var_bound.empty();
-        $var_bound.append(dynamic_html_bound);
-        // ----------------------Equation Constraints-------------------------------------------------------------------------------------
-        $("#equation_const").show();
-        dynamic_html_bound  =``;
-        console.log('before append',const_equation_list);
-        dynamic_html_bound = dynamic_html_bound.concat(` ${JSON.stringify(const_equation_list)}`)
-        var $var_bound = $('#equation_constraints_inner_text');
-        $var_bound.empty();
-        $var_bound.append(dynamic_html_bound);
-        
-  });
-  
-  const generate_equation_constraints = (input_list)=>{
-    cloned_object = Object.assign({}, global_var_template);
-    Object.keys(input_list).forEach(key =>{
-      key === 'eq_right' ? ! input_list[key] ? cloned_object['eq_right'] = 0 : cloned_object[key] = input_list[key] : cloned_object[key] = input_list[key] ;     //added this line to help us rid of null when user doesnot put any value.
-    })
-    return Object.values(cloned_object);
-  }
-
-  const generate_bounds = (input_list)=>{
-
-    cloned_object = Object.assign({}, global_var_template);
-    Object.keys(input_list).forEach(key =>{
-      cloned_object[key] = input_list[key];  //added this line to help us rid of null when user doesnot put any value.
-    })
-    console.log('object values',Object.values(cloned_object));
-    return Object.values(cloned_object);
-  }
-  </script>
+      <h2>Section title</h2>
+      <div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Header</th>
+              <th>Header</th>
+              <th>Header</th>
+              <th>Header</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1,001</td>
+              <td>random</td>
+              <td>data</td>
+              <td>placeholder</td>
+              <td>text</td>
+            </tr>
+            <tr>
+              <td>1,002</td>
+              <td>placeholder</td>
+              <td>irrelevant</td>
+              <td>visual</td>
+              <td>layout</td>
+            </tr>
+            <tr>
+              <td>1,003</td>
+              <td>data</td>
+              <td>rich</td>
+              <td>dashboard</td>
+              <td>tabular</td>
+            </tr>
+            <tr>
+              <td>1,003</td>
+              <td>information</td>
+              <td>placeholder</td>
+              <td>illustrative</td>
+              <td>data</td>
+            </tr>
+            <tr>
+              <td>1,004</td>
+              <td>text</td>
+              <td>random</td>
+              <td>layout</td>
+              <td>dashboard</td>
+            </tr>
+            <tr>
+              <td>1,005</td>
+              <td>dashboard</td>
+              <td>irrelevant</td>
+              <td>text</td>
+              <td>placeholder</td>
+            </tr>
+            <tr>
+              <td>1,006</td>
+              <td>dashboard</td>
+              <td>illustrative</td>
+              <td>rich</td>
+              <td>data</td>
+            </tr>
+            <tr>
+              <td>1,007</td>
+              <td>placeholder</td>
+              <td>tabular</td>
+              <td>information</td>
+              <td>irrelevant</td>
+            </tr>
+            <tr>
+              <td>1,008</td>
+              <td>random</td>
+              <td>data</td>
+              <td>placeholder</td>
+              <td>text</td>
+            </tr>
+            <tr>
+              <td>1,009</td>
+              <td>placeholder</td>
+              <td>irrelevant</td>
+              <td>visual</td>
+              <td>layout</td>
+            </tr>
+            <tr>
+              <td>1,010</td>
+              <td>data</td>
+              <td>rich</td>
+              <td>dashboard</td>
+              <td>tabular</td>
+            </tr>
+            <tr>
+              <td>1,011</td>
+              <td>information</td>
+              <td>placeholder</td>
+              <td>illustrative</td>
+              <td>data</td>
+            </tr>
+            <tr>
+              <td>1,012</td>
+              <td>text</td>
+              <td>placeholder</td>
+              <td>layout</td>
+              <td>dashboard</td>
+            </tr>
+            <tr>
+              <td>1,013</td>
+              <td>dashboard</td>
+              <td>irrelevant</td>
+              <td>text</td>
+              <td>visual</td>
+            </tr>
+            <tr>
+              <td>1,014</td>
+              <td>dashboard</td>
+              <td>illustrative</td>
+              <td>rich</td>
+              <td>data</td>
+            </tr>
+            <tr>
+              <td>1,015</td>
+              <td>random</td>
+              <td>tabular</td>
+              <td>information</td>
+              <td>text</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>
 
 
-<script>
-  $("#form-submit-bound").on("click", function(){
-    var final_submit = [];
-    var power = [];
-    $('#add_content_scroll li').each(function(){
-      let ali = $(this);
-      final_submit.push(ali.text())
-      console.log(final_submit);
-    });
-      console.log(lower_bound_list);
-      var datav = JSON.stringify({'lower_bound':lower_bound_list,'upper_bound':upper_bound_list,'equation_constraints':const_equation_list});
-    $.ajax({
-        type: 'POST',
-        contentType: 'application/json',
-        url: '/post/data',
-        dataType : 'json',
-        data:datav,
-        url: "/boundConst",
-        success: function(data){
-          $("#eq_spnr").hide();
-          $("#success_message_bound").html('');
-          if(data.code == 200){
-            $("#success_message_bound").html(data.message);
-            $("#success_message_bound").show();
-            console.log(data.message);
-          }
-          else if(data.code == 400){
-            $("#success_message_bound").html(data.message);
-            $("#success_message_bound").show();
-            console.log(data.message);
-          }
-          var buf1=data;
-          console.log(data);
-        }
-    })
-
-  });
-      </script>
-
-
-
-<script>
-  $("#form-clear-bound").on("click", function(){
-        var $var_bound = $('#add_content_scroll');
-        $var_bound.empty();
-        var $lwr_bound = $('#lower_bound_inner_text');
-        $lwr_bound.empty();
-        var $upr_bound = $('#upper_bound_inner_text');
-        $upr_bound.empty();
-        var $eq_const_bound = $('#equation_constraints_inner_text');
-        $eq_const_bound.empty();
-        lower_bound_list = [];
-        upper_bound_list = [];
-        const_equation_list = [];
-  });
-      </script>
+    <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script><script src="dashboard.js"></script>
   </body>
 </html>
